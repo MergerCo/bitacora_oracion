@@ -1,0 +1,2120 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light dark">
+  <title>Bitácora de Oración</title>
+  <style>
+    /*  VARIABLES DE TEMA */
+    :root {
+  color-scheme: light;
+  --bg: #f3f1ec;
+  --surface: #fbfaf6;
+  --surface-2: #eae7df;
+  --text: #2e2b26;
+  --muted: #6b665d;
+  --line: #ddd8cd;
+  --accent: #4d6a52;
+  --accent-hover: #3d5641;
+  --accent-contrast: #ffffff;
+  --accent-soft: #e3ebd9;
+  --success: #4d6a52;
+  --danger: #9e4440;          
+  --shadow: 0 8px 24px rgb(60 55 45 / 6%);
+  --radius: 12px;
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #1a1917; 
+  --surface: #232220;
+  --surface-2: #2c2b28;
+  --text: #e6e2d9; 
+  --muted: #a39e92; 
+  --line: #393731;
+  --accent: #92b596; 
+  --accent-hover: #a8c9ab;
+  --accent-contrast: #1a1917;
+  --accent-soft: #2a3a2c;
+  --success: #92b596;
+  --danger: #e08a80;
+  --shadow: 0 8px 24px rgb(0 0 0 / 22%);
+  --radius: 12px;
+}
+
+    /*  BASE */
+    *,
+    *::before,
+    *::after { box-sizing: border-box; }
+
+    html { -webkit-text-size-adjust: 100%; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+                   Helvetica, Arial, sans-serif;
+      font-size: 15px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      transition: background .2s ease, color .2s ease;
+    }
+
+    h1, h2, h3 { letter-spacing: -0.01em; }
+
+    button { font-family: inherit; }
+
+    ::selection { background: var(--accent-soft); }
+
+    /*  LAYOUT */
+    .app {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 16px 16px 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .app-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 8px 0 16px;
+      flex-wrap: wrap;
+    }
+
+    .app-header h1 { font-size: 1.25rem; margin: 0; }
+    .subtitle { font-size: .8rem; color: var(--muted); margin: 2px 0 0; }
+
+    .header-actions { display: flex; gap: 8px; }
+
+    /*  BOTONES */
+    .icon-btn {
+      width: 36px;
+      height: 36px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: var(--surface);
+      color: var(--text);
+      cursor: pointer;
+      font-size: .78rem;
+      font-weight: 700;
+      letter-spacing: .02em;
+      transition: background .15s ease, border-color .15s ease;
+    }
+
+    .icon-btn:hover { background: var(--surface-2); }
+    .icon-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+    .icon-btn.small {
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+    }
+
+    .icon-btn.danger:hover { color: var(--danger); border-color: var(--danger); }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 9px 14px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: var(--surface);
+      color: var(--text);
+      font-size: .87rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background .15s ease, border-color .15s ease;
+    }
+
+    .btn:hover { background: var(--surface-2); }
+    .btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+    .btn.primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: var(--accent-contrast);
+    }
+
+    .btn.primary:hover {
+      background: var(--accent-hover);
+      border-color: var(--accent-hover);
+    }
+
+    .btn.ghost { background: transparent; }
+
+    .btn.danger {
+      color: var(--danger);
+      border-color: var(--danger);
+      background: transparent;
+    }
+
+    .btn.danger:hover {
+      background: color-mix(in srgb, var(--danger) 10%, transparent);
+    }
+
+    /*  PESTAÑAS */
+    .tabs {
+      display: flex;
+      gap: 4px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 4px;
+      margin-bottom: 18px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .tabs::-webkit-scrollbar { display: none; }
+
+    .tab {
+      flex: 1 0 auto;
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      padding: 8px 14px;
+      border-radius: 9px;
+      font-size: .85rem;
+      font-weight: 500;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background .15s ease, color .15s ease;
+    }
+
+    .tab:hover { color: var(--text); }
+    .tab.active { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+    .tab:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; animation: fade .18s ease; }
+
+    @keyframes fade {
+      from { opacity: 0; transform: translateY(4px); }
+      to   { opacity: 1; transform: none; }
+    }
+
+    /*  BARRA DE HERRAMIENTAS Y FILTROS */
+    .toolbar {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+
+    .filters {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .day-chips {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 2px;
+      scrollbar-width: none;
+    }
+
+    .day-chips::-webkit-scrollbar { display: none; }
+
+    .chip {
+      flex: 0 0 auto;
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: var(--surface);
+      color: var(--muted);
+      font-size: .8rem;
+      cursor: pointer;
+      transition: all .15s ease;
+    }
+
+    .chip:hover { color: var(--text); }
+
+    .chip.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: var(--accent-contrast);
+      font-weight: 600;
+    }
+
+    select.filter-select {
+      width: 100%;
+      padding: 9px 10px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: var(--surface);
+      color: var(--text);
+      font: inherit;
+      font-size: .87rem;
+      cursor: pointer;
+    }
+
+    /*  ACCIÓN RÁPIDA "MARCAR HOY" */
+    .today-quick {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 18px;
+      padding: 14px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .today-quick .btn { align-self: flex-start; }
+
+    .today-hint {
+      font-size: .82rem;
+      color: var(--muted);
+      margin: 0;
+    }
+
+    @media (min-width: 520px) {
+      .today-quick {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .today-quick .btn { align-self: auto; }
+    }
+
+    /*  TARJETAS DE PETICIÓN */
+    .prayer-list { display: flex; flex-direction: column; gap: 10px; }
+
+    .prayer-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 14px;
+      box-shadow: var(--shadow);
+      transition: border-color .15s ease, opacity .15s ease;
+    }
+
+    .prayer-card.is-answered { opacity: .62; }
+    .prayer-card.is-answered .prayer-title { text-decoration: line-through; }
+
+    .prayer-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .prayer-title {
+      font-size: .98rem;
+      font-weight: 600;
+      margin: 0;
+      word-break: break-word;
+      line-height: 1.35;
+    }
+
+    .prayer-actions { display: flex; gap: 4px; flex-shrink: 0; }
+
+    .prayer-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 10px;
+    }
+
+    .badge {
+      display: inline-block;
+      font-size: .72rem;
+      line-height: 1.4;
+      padding: 2px 9px;
+      border-radius: 999px;
+      background: var(--surface-2);
+      color: var(--muted);
+      border: 1px solid var(--line);
+      white-space: nowrap;
+    }
+
+    .badge.category {
+      background: var(--accent-soft);
+      color: var(--accent);
+      border-color: transparent;
+      font-weight: 500;
+    }
+
+    .badge.answered {
+      background: color-mix(in srgb, var(--success) 14%, transparent);
+      color: var(--success);
+      border-color: transparent;
+      font-weight: 500;
+    }
+
+    .prayer-notes {
+      margin: 10px 0 0;
+      font-size: .87rem;
+      color: var(--muted);
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .empty {
+      text-align: center;
+      padding: 40px 16px;
+      color: var(--muted);
+      font-size: .9rem;
+      border: 1px dashed var(--line);
+      border-radius: var(--radius);
+    }
+
+    /*  CALENDARIO */
+    .calendar-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .calendar-head h2 {
+      font-size: 1rem;
+      margin: 0;
+      text-transform: capitalize;
+      font-weight: 600;
+    }
+
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 4px;
+      margin-bottom: 16px;
+    }
+
+    .cal-head {
+      font-size: .68rem;
+      text-align: center;
+      color: var(--muted);
+      padding: 4px 0;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .03em;
+    }
+
+    .cal-cell {
+      aspect-ratio: 1 / 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 9px;
+      border: 1px solid transparent;
+      background: var(--surface);
+      font-size: .85rem;
+      cursor: pointer;
+      user-select: none;
+      transition: background .12s ease, color .12s ease;
+    }
+
+    .cal-cell:hover:not(.out):not(.disabled) { background: var(--surface-2); }
+    .cal-cell.out { visibility: hidden; }
+
+    .cal-cell.disabled {
+      color: var(--muted);
+      opacity: .35;
+      cursor: not-allowed;
+      background: transparent;
+    }
+
+    .cal-cell.prayed {
+      background: var(--accent);
+      color: var(--accent-contrast);
+      font-weight: 700;
+    }
+
+    .cal-cell.today { border-color: var(--accent); }
+
+    /*  PROGRESO / ESTADÍSTICAS */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 22px;
+    }
+
+    .stat {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 16px 8px;
+      text-align: center;
+      box-shadow: var(--shadow);
+    }
+
+    .stat .num {
+      font-size: 1.7rem;
+      font-weight: 700;
+      line-height: 1.1;
+      color: var(--accent);
+    }
+
+    .stat .label {
+      font-size: .72rem;
+      color: var(--muted);
+      margin-top: 4px;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+
+    .chart-filters {
+      display: inline-flex;
+      gap: 2px;
+      background: var(--surface-2);
+      border-radius: 10px;
+      padding: 3px;
+      margin-bottom: 12px;
+    }
+
+    .chart-filters button {
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      padding: 6px 16px;
+      border-radius: 8px;
+      font-size: .82rem;
+      cursor: pointer;
+      transition: background .15s ease, color .15s ease;
+    }
+
+    .chart-filters button:hover { color: var(--text); }
+
+    .chart-filters button.active {
+      background: var(--surface);
+      color: var(--text);
+      font-weight: 600;
+      box-shadow: var(--shadow);
+    }
+
+    .bars {
+      display: flex;
+      align-items: flex-end;
+      gap: 3px;
+      height: 120px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 12px 10px;
+      box-shadow: var(--shadow);
+    }
+
+    .bar {
+      flex: 1;
+      background: var(--surface-2);
+      border-radius: 3px;
+      transition: height .25s ease, background .25s ease;
+      min-width: 0;
+    }
+
+    .bar.filled { background: var(--accent); }
+
+    .chart-legend {
+      display: flex;
+      justify-content: space-between;
+      font-size: .72rem;
+      color: var(--muted);
+      margin-top: 8px;
+    }
+
+    /*  MÉTODO DE ORACIÓN */
+    .method-intro {
+      color: var(--muted);
+      font-size: .9rem;
+      margin: 0 0 18px;
+    }
+
+    .method { padding-bottom: 20px; }
+
+    .method h2 { font-size: 1.05rem; margin: 0 0 8px; }
+
+    .step {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-left: 3px solid var(--accent);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      margin-bottom: 12px;
+      box-shadow: var(--shadow);
+    }
+
+    .step h3 {
+      margin: 0 0 6px;
+      font-size: .95rem;
+      color: var(--accent);
+    }
+
+    .step p { margin: 0 0 10px; font-size: .88rem; }
+
+    .step blockquote {
+      margin: 0;
+      padding: 10px 12px;
+      background: var(--surface-2);
+      border-radius: 9px;
+      font-size: .87rem;
+      font-style: italic;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    /*  DATOS */
+    .settings-group {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 16px;
+      margin-bottom: 12px;
+      box-shadow: var(--shadow);
+    }
+
+    .data-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .data-actions .btn { justify-content: center; }
+
+    .hint {
+      font-size: .78rem;
+      color: var(--muted);
+      margin: 14px 0 0;
+    }
+
+    /*  DIÁLOGOS */
+    dialog {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: var(--surface);
+      color: var(--text);
+      padding: 20px;
+      width: min(480px, calc(100% - 32px));
+      box-shadow: 0 12px 48px rgba(0, 0, 0, .25);
+    }
+
+    dialog::backdrop { background: rgba(0, 0, 0, .45); }
+
+    dialog h2 { font-size: 1.05rem; margin: 0 0 16px; }
+
+    .field { display: block; margin-bottom: 12px; }
+
+    .field > span {
+      display: block;
+      font-size: .78rem;
+      color: var(--muted);
+      margin-bottom: 5px;
+      font-weight: 500;
+    }
+
+    .field input,
+    .field select,
+    .field textarea {
+      width: 100%;
+      padding: 9px 11px;
+      border-radius: 9px;
+      border: 1px solid var(--line);
+      background: var(--bg);
+      color: var(--text);
+      font: inherit;
+      font-size: .9rem;
+      transition: border-color .15s ease;
+    }
+
+    .field textarea { resize: vertical; min-height: 84px; }
+
+    .field input:focus,
+    .field select:focus,
+    .field textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    .dialog-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-top: 18px;
+    }
+
+    .cat-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .cat-row input {
+      flex: 1;
+      padding: 8px 11px;
+      border-radius: 9px;
+      border: 1px solid var(--line);
+      background: var(--bg);
+      color: var(--text);
+      font: inherit;
+      font-size: .88rem;
+      min-width: 0;
+    }
+
+    .cat-row input:focus { outline: none; border-color: var(--accent); }
+
+    .cat-form {
+      display: flex;
+      gap: 8px;
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid var(--line);
+    }
+
+    .cat-form input {
+      flex: 1;
+      padding: 9px 11px;
+      border-radius: 9px;
+      border: 1px solid var(--line);
+      background: var(--bg);
+      color: var(--text);
+      font: inherit;
+      font-size: .88rem;
+      min-width: 0;
+    }
+
+    .cat-form input:focus { outline: none; border-color: var(--accent); }
+
+    .muted { color: var(--muted); font-size: .86rem; }
+
+    /*  TOAST */
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 26px;
+      transform: translateX(-50%) translateY(16px);
+      background: var(--text);
+      color: var(--bg);
+      padding: 10px 18px;
+      border-radius: 999px;
+      font-size: .84rem;
+      font-weight: 500;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .22s ease, transform .22s ease;
+      z-index: 200;
+      max-width: calc(100% - 32px);
+      text-align: center;
+    }
+
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .toast.error { background: var(--danger); color: var(--bg); }
+
+    /*  PIE DE PÁGINA */
+    .app-footer {
+      margin-top: auto;
+      padding: 28px 0 18px;
+      text-align: center;
+      font-size: .74rem;
+      color: var(--muted);
+      line-height: 1.7;
+      border-top: 1px solid var(--line);
+    }
+
+    .app-footer a { color: var(--accent); text-decoration: none; }
+    .app-footer a:hover { text-decoration: underline; }
+  </style>
+</head>
+
+<body>
+  <div class="app">
+    <!-- ==================== ENCABEZADO ==================== -->
+    <header class="app-header">
+      <div class="brand">
+        <h1 data-i18n="appTitle">Bitácora de Oración</h1>
+        <p class="subtitle" data-i18n="appSubtitle">Registra, organiza y da seguimiento a tus oraciones</p>
+      </div>
+      <div class="header-actions">
+        <button id="langToggle" class="icon-btn" type="button" title="Idioma / Language" aria-label="Idioma / Language">ES</button>
+        <button id="themeToggle" class="icon-btn" type="button" title="Tema" aria-label="Tema"></button>
+      </div>
+    </header>
+
+    <!-- ==================== PESTAÑAS ==================== -->
+    <nav class="tabs" role="tablist">
+      <button class="tab active" data-tab="prayers"  type="button" data-i18n="navPrayers">Peticiones</button>
+      <button class="tab" data-tab="calendar" type="button" data-i18n="navCalendar">Calendario</button>
+      <button class="tab" data-tab="stats"    type="button" data-i18n="navStats">Progreso</button>
+      <button class="tab" data-tab="method"   type="button" data-i18n="navMethod">Método</button>
+      <button class="tab" data-tab="data"     type="button" data-i18n="navData">Datos</button>
+    </nav>
+
+    <main>
+      <!-- ==================== PETICIONES ==================== -->
+      <section id="tab-prayers" class="tab-panel active">
+        <div class="today-quick">
+          <button type="button" class="btn primary" data-action="toggle-today"></button>
+          <p class="today-hint" data-role="today-hint"></p>
+        </div>
+
+        <div class="toolbar">
+          <button id="newPrayerBtn" class="btn primary" type="button" data-i18n="newPrayer">Nueva petición</button>
+          <button id="manageCatsBtn" class="btn ghost" type="button" data-i18n="categories">Categorías</button>
+        </div>
+
+        <div class="filters">
+          <div class="day-chips" id="dayChips"></div>
+          <select id="categoryFilter" class="filter-select" aria-label="Filtro de categoría"></select>
+        </div>
+
+        <div id="prayerList" class="prayer-list"></div>
+      </section>
+
+      <!-- ==================== CALENDARIO ==================== -->
+      <section id="tab-calendar" class="tab-panel">
+        <div class="today-quick">
+          <button type="button" class="btn primary" data-action="toggle-today"></button>
+          <p class="today-hint" data-role="today-hint"></p>
+        </div>
+
+        <div class="calendar-head">
+          <button id="prevMonth" class="icon-btn" type="button" data-i18n-aria="prevMonth" aria-label="Mes anterior">‹</button>
+          <h2 id="monthLabel"></h2>
+          <button id="nextMonth" class="icon-btn" type="button" data-i18n-aria="nextMonth" aria-label="Mes siguiente">›</button>
+        </div>
+
+        <div class="calendar-grid" id="calendarGrid"></div>
+      </section>
+
+      <!-- ==================== PROGRESO ==================== -->
+      <section id="tab-stats" class="tab-panel">
+        <div class="stats-grid">
+          <div class="stat">
+            <div class="num" id="statWeek">0</div>
+            <div class="label" data-i18n="statWeekLabel">Esta semana</div>
+          </div>
+          <div class="stat">
+            <div class="num" id="statMonth">0</div>
+            <div class="label" data-i18n="statMonthLabel">Este mes</div>
+          </div>
+          <div class="stat">
+            <div class="num" id="statTotal">0</div>
+            <div class="label" data-i18n="statTotalLabel">Total de días</div>
+          </div>
+        </div>
+
+        <div class="chart-filters" id="chartFilters">
+          <button type="button" data-range="week" class="active" data-i18n="chartWeek">Semana</button>
+          <button type="button" data-range="month" data-i18n="chartMonth">Mes</button>
+          <button type="button" data-range="year" data-i18n="chartYear">Año</button>
+        </div>
+
+        <div class="bars" id="streakBars"></div>
+        <div class="chart-legend">
+          <span id="chartStart"></span>
+          <span id="chartEnd"></span>
+        </div>
+      </section>
+
+      <!-- ==================== MÉTODO ==================== -->
+      <section id="tab-method" class="tab-panel">
+        <div class="method">
+          <h2 data-i18n="methodTitle">Método de oración en 3 pasos</h2>
+          <p class="method-intro" data-i18n="methodIntro">APA: Agradece, Pide perdón, Apóyate en Dios.</p>
+
+          <div class="step">
+            <h3 data-i18n="step1Title">A — Agradece</h3>
+            <p data-i18n="step1Desc">Reconoce el amor de Dios y lo que ha hecho por ti en Jesús.</p>
+            <blockquote data-i18n="step1Prayer">"Señor, gracias por amarme y darme perdón y esperanza por medio de Jesús."</blockquote>
+          </div>
+
+          <div class="step">
+            <h3 data-i18n="step2Title">P — Pide perdón</h3>
+            <p data-i18n="step2Desc">Confiesa tu pecado y reconoce tu necesidad de su gracia.</p>
+            <blockquote data-i18n="step2Prayer">"Perdóname por no valorar tu gracia y por vivir tantas veces buscando mi propia voluntad."</blockquote>
+          </div>
+
+          <div class="step">
+            <h3 data-i18n="step3Title">A — Apóyate en Dios</h3>
+            <p data-i18n="step3Desc">Pide su ayuda y dirección para responder a su gracia y vivir conforme a su voluntad.</p>
+            <blockquote data-i18n="step3Prayer">"Señor, guíame y ayúdame a vivir en gratitud, obediencia y amor. Transforma mi corazón para reflejar a Jesús."</blockquote>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== DATOS ==================== -->
+      <section id="tab-data" class="tab-panel">
+        <div class="settings-group">
+          <div class="data-actions">
+            <button id="exportBtn" class="btn" type="button" data-i18n="export">Exportar datos JSON</button>
+            <button id="importBtn" class="btn" type="button" data-i18n="import">Importar datos JSON</button>
+            <button id="resetBtn" class="btn danger" type="button" data-i18n="reset">Reiniciar todo</button>
+          </div>
+          <input type="file" id="importFile" accept="application/json,.json" hidden>
+          <p class="hint" data-i18n="autoSave">Los datos se guardan automáticamente en este navegador.</p>
+        </div>
+      </section>
+    </main>
+
+    <!-- ==================== PIE ==================== -->
+    <footer class="app-footer">
+      <div data-i18n="developedBy">Desarrollado por: Jesús Hernández</div>
+      <div><a href="mailto:info.mergerconsulting@gmail.com">info.mergerconsulting@gmail.com</a></div>
+      <div data-i18n="rights">© 2026 Todos los derechos reservados</div>
+    </footer>
+  </div>
+
+  <!-- ==================== DIÁLOGO: PETICIÓN ==================== -->
+  <dialog id="prayerDialog">
+    <form id="prayerForm" novalidate>
+      <h2 id="prayerDialogTitle">Nueva petición</h2>
+
+      <label class="field">
+        <span data-i18n="title">Título</span>
+        <input type="text" id="prayerTitle" maxlength="120" required data-i18n-placeholder="titlePlaceholder">
+      </label>
+
+      <label class="field">
+        <span data-i18n="category">Categoría</span>
+        <select id="prayerCategory"></select>
+      </label>
+
+      <label class="field">
+        <span data-i18n="day">Día de la semana</span>
+        <select id="prayerDay"></select>
+      </label>
+
+      <label class="field">
+        <span data-i18n="notes">Notas</span>
+        <textarea id="prayerNotes" rows="4" maxlength="2000" data-i18n-placeholder="notesPlaceholder"></textarea>
+      </label>
+
+      <div class="dialog-actions">
+        <button type="button" id="cancelPrayer" class="btn ghost" data-i18n="cancel">Cancelar</button>
+        <button type="submit" class="btn primary" data-i18n="save">Guardar</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- ==================== DIÁLOGO: CATEGORÍAS ==================== -->
+  <dialog id="catsDialog">
+    <h2 data-i18n="categoriesTitle">Gestionar categorías</h2>
+    <div id="catList"></div>
+    <form class="cat-form" id="catForm">
+      <input type="text" id="newCatName" maxlength="40" required data-i18n-placeholder="newCategoryPlaceholder">
+      <button type="submit" class="btn primary" data-i18n="addCategory">Añadir</button>
+    </form>
+    <div class="dialog-actions">
+      <button type="button" id="closeCats" class="btn ghost" data-i18n="close">Cerrar</button>
+    </div>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    'use strict';
+
+    /*  1. CONSTANTES */
+    const STORAGE_KEY = 'prayer-journal-v1';
+
+    const MONTHS = {
+      es: ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
+           'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'],
+      en: ['January', 'February', 'March', 'April', 'May', 'June',
+           'July', 'August', 'September', 'October', 'November', 'December']
+    };
+
+    const DAYS = {
+      es: ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'],
+      en: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+    };
+
+    const DAYS_SHORT = {
+      es: ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'],
+      en: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+    };
+
+    const DEFAULT_CATEGORIES = {
+      es: ['Familia', 'Salud', 'Trabajo', 'Gratitud', 'Personal'],
+      en: ['Family', 'Health', 'Work', 'Gratitude', 'Personal']
+    };
+
+    const ICONS = {
+      check: '<polyline points="20 6 9 17 4 12"/>',
+      rotate: '<polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/>',
+      edit: '<path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/>',
+      trash: '<polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/>',
+      sun: '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>',
+      moon: '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>'
+    };
+
+    /*  2. INTERNACIONALIZACIÓN (i18n) */
+    const I18N = {
+      es: {
+        appTitle: 'Bitácora de Oración',
+        appSubtitle: 'Registra, organiza y da seguimiento a tus oraciones',
+        navPrayers: 'Peticiones',
+        navCalendar: 'Calendario',
+        navStats: 'Progreso',
+        navMethod: 'Método',
+        navData: 'Datos',
+
+        newPrayer: 'Nueva petición',
+        editPrayer: 'Editar petición',
+        categories: 'Categorías',
+        all: 'Todos',
+        allCategories: 'Todas las categorías',
+        noPrayers: 'Aún no hay peticiones. Crea la primera.',
+        title: 'Título',
+        titlePlaceholder: 'Por qué quieres orar...',
+        category: 'Categoría',
+        noCategory: 'Sin categoría',
+        day: 'Día de la semana',
+        noDay: 'Sin asignar',
+        everyDay: 'Todos los días',
+        notes: 'Notas',
+        notesPlaceholder: 'Detalles, versículos, reflexiones...',
+        save: 'Guardar',
+        cancel: 'Cancelar',
+        edit: 'Editar',
+        delete: 'Eliminar',
+        markAnswered: 'Marcar como respondida',
+        unmarkAnswered: 'Marcar como pendiente',
+        answered: 'Respondida',
+        deletePrayerConfirm: '¿Eliminar esta petición?',
+        prayerSaved: 'Petición guardada',
+        prayerDeleted: 'Petición eliminada',
+
+        categoriesTitle: 'Gestionar categorías',
+        newCategoryPlaceholder: 'Nombre de la categoría',
+        addCategory: 'Añadir',
+        close: 'Cerrar',
+        deleteCategoryConfirm: '¿Eliminar esta categoría? Las peticiones asociadas quedarán sin categoría.',
+        categoryAdded: 'Categoría añadida',
+        categoryDeleted: 'Categoría eliminada',
+        categoryExists: 'La categoría ya existe',
+        noCategories: 'Aún no hay categorías.',
+
+        markToday: 'Marcar hoy como día de oración',
+        unmarkToday: 'Quitar marca de hoy',
+        prayedToday: 'Has orado hoy. ¡Sigue así!',
+        notPrayedToday: 'Aún no marcas el día de hoy.',
+        prevMonth: 'Mes anterior',
+        nextMonth: 'Mes siguiente',
+
+        statWeekLabel: 'Esta semana',
+        statMonthLabel: 'Este mes',
+        statTotalLabel: 'Total de días',
+        chartWeek: 'Semana',
+        chartMonth: 'Mes',
+        chartYear: 'Año',
+
+        methodTitle: 'Método de oración en 3 pasos',
+        methodIntro: 'APA: Agradece, Pide perdón, Apóyate en Dios.',
+        step1Title: 'A — Agradece',
+        step1Desc: 'Reconoce el amor de Dios y lo que ha hecho por ti en Jesús.',
+        step1Prayer: '"Señor, gracias por amarme y darme perdón y esperanza por medio de Jesús."',
+        step2Title: 'P — Pide perdón',
+        step2Desc: 'Confiesa tu pecado y reconoce tu necesidad de su gracia.',
+        step2Prayer: '"Perdóname por no valorar tu gracia y por vivir tantas veces buscando mi propia voluntad."',
+        step3Title: 'A — Apóyate en Dios',
+        step3Desc: 'Pide su ayuda y dirección para responder a su gracia y vivir conforme a su voluntad.',
+        step3Prayer: '"Señor, guíame y ayúdame a vivir en gratitud, obediencia y amor. Transforma mi corazón para reflejar a Jesús."',
+
+        light: 'Claro',
+        dark: 'Oscuro',
+        export: 'Exportar datos JSON',
+        import: 'Importar datos JSON',
+        reset: 'Reiniciar todo',
+        resetConfirm: 'Esto borrará todas tus peticiones, categorías y días de oración. ¿Continuar?',
+        importConfirm: 'Importar reemplazará todos los datos actuales. ¿Continuar?',
+        exportSuccess: 'Datos exportados',
+        importSuccess: 'Datos importados correctamente',
+        importError: 'Archivo inválido. No se pudo importar.',
+        resetDone: 'Todo ha sido reiniciado',
+        autoSave: 'Los datos se guardan automáticamente en este navegador.',
+
+        developedBy: 'Desarrollado por: Jesús Hernández',
+        rights: '© 2026 Todos los derechos reservados'
+      },
+
+      en: {
+        appTitle: 'Prayer Journal',
+        appSubtitle: 'Record, organize, and track your prayers',
+        navPrayers: 'Prayers',
+        navCalendar: 'Calendar',
+        navStats: 'Progress',
+        navMethod: 'Method',
+        navData: 'Data',
+
+        newPrayer: 'New prayer',
+        editPrayer: 'Edit prayer',
+        categories: 'Categories',
+        all: 'All',
+        allCategories: 'All categories',
+        noPrayers: 'No prayers yet. Create your first one.',
+        title: 'Title',
+        titlePlaceholder: 'What do you want to pray about...',
+        category: 'Category',
+        noCategory: 'No category',
+        day: 'Day of the week',
+        noDay: 'Unassigned',
+        everyDay: 'Every day',
+        notes: 'Notes',
+        notesPlaceholder: 'Details, verses, reflections...',
+        save: 'Save',
+        cancel: 'Cancel',
+        edit: 'Edit',
+        delete: 'Delete',
+        markAnswered: 'Mark as answered',
+        unmarkAnswered: 'Mark as pending',
+        answered: 'Answered',
+        deletePrayerConfirm: 'Delete this prayer?',
+        prayerSaved: 'Prayer saved',
+        prayerDeleted: 'Prayer deleted',
+
+        categoriesTitle: 'Manage categories',
+        newCategoryPlaceholder: 'Category name',
+        addCategory: 'Add',
+        close: 'Close',
+        deleteCategoryConfirm: 'Delete this category? Associated prayers will become uncategorized.',
+        categoryAdded: 'Category added',
+        categoryDeleted: 'Category deleted',
+        categoryExists: 'Category already exists',
+        noCategories: 'No categories yet.',
+
+        markToday: 'Mark today as a prayer day',
+        unmarkToday: 'Unmark today',
+        prayedToday: 'You prayed today. Keep it up!',
+        notPrayedToday: "You haven't marked today yet.",
+        prevMonth: 'Previous month',
+        nextMonth: 'Next month',
+
+        statWeekLabel: 'This week',
+        statMonthLabel: 'This month',
+        statTotalLabel: 'Total days',
+        chartWeek: 'Week',
+        chartMonth: 'Month',
+        chartYear: 'Year',
+
+        methodTitle: '3-step prayer method',
+        methodIntro: 'APA: Give thanks, Ask forgiveness, Abide in God.',
+        step1Title: 'A — Give thanks',
+        step1Desc: 'Recognize God\'s love and what He has done for you in Jesus.',
+        step1Prayer: '"Lord, thank you for loving me and giving me forgiveness and hope through Jesus."',
+        step2Title: 'P — Ask forgiveness',
+        step2Desc: 'Confess your sin and acknowledge your need for His grace.',
+        step2Prayer: '"Forgive me for not valuing your grace and for so often seeking my own will."',
+        step3Title: 'A — Abide in God',
+        step3Desc: 'Ask for His help and guidance to respond to His grace and live according to His will.',
+        step3Prayer: '"Lord, guide me and help me live in gratitude, obedience, and love. Transform my heart to reflect Jesus."',
+
+        light: 'Light',
+        dark: 'Dark',
+        export: 'Export data JSON',
+        import: 'Import data JSON',
+        reset: 'Reset everything',
+        resetConfirm: 'This will delete all your prayers, categories, and prayer days. Continue?',
+        importConfirm: 'Importing will replace all current data. Continue?',
+        exportSuccess: 'Data exported',
+        importSuccess: 'Data imported successfully',
+        importError: 'Invalid file. Could not import.',
+        resetDone: 'Everything has been reset',
+        autoSave: 'Data is saved automatically in this browser.',
+
+        developedBy: 'Developed by: Jesús Hernández',
+        rights: '© 2026 All rights reserved'
+      }
+    };
+
+    /*  3. UTILIDADES */
+    function uid() {
+      return Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+    }
+
+    function pad2(n) {
+      return String(n).padStart(2, '0');
+    }
+
+    function toDateKey(date) {
+      return date.getFullYear() + '-' + pad2(date.getMonth() + 1) + '-' + pad2(date.getDate());
+    }
+
+    function todayKey() {
+      return toDateKey(new Date());
+    }
+
+    function escapeHtml(value) {
+      return String(value).replace(/[&<>"']/g, function (ch) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch];
+      });
+    }
+
+    function icon(name, size) {
+      const s = size || 16;
+      return '<svg viewBox="0 0 24 24" width="' + s + '" height="' + s + '" fill="none" ' +
+             'stroke="currentColor" stroke-width="2" stroke-linecap="round" ' +
+             'stroke-linejoin="round" aria-hidden="true">' + ICONS[name] + '</svg>';
+    }
+
+    function t(key) {
+      const lang = state.settings.lang;
+      const dict = I18N[lang] || I18N.es;
+      return dict[key] !== undefined ? dict[key] : (I18N.es[key] || key);
+    }
+
+    function getWeekStart(date) {
+      const d = new Date(date);
+      const day = d.getDay(); // 0 = domingo, 1 = lunes...
+      const diff = day === 0 ? -6 : 1 - day; // mover al lunes
+      d.setDate(d.getDate() + diff);
+      d.setHours(0, 0, 0, 0);
+      return d;
+    }
+
+    /*  4. ESTADO Y PERSISTENCIA */
+    let state = loadState();
+    let editingId = null;
+    let currentDayFilter = 'all';
+    let currentCategoryFilter = 'all';
+    let calYear = new Date().getFullYear();
+    let calMonth = new Date().getMonth();
+    let chartRange = 'week';
+    let toastTimer = null;
+
+    function createInitialState() {
+      const navLang = (navigator.language || 'es').toLowerCase();
+      const lang = navLang.indexOf('en') === 0 ? 'en' : 'es';
+      const prefersDark = window.matchMedia &&
+        window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+      return {
+        version: 1,
+        prayers: [],
+        categories: DEFAULT_CATEGORIES[lang].map(function (name) {
+          return { id: uid(), name: name };
+        }),
+        prayerDays: [],
+        settings: {
+          theme: prefersDark ? 'dark' : 'light',
+          lang: lang
+        }
+      };
+    }
+
+    function normalizePrayer(p) {
+      if (!p || typeof p !== 'object' || typeof p.title !== 'string') return null;
+
+      const isValidDay = p.day === 'all' ||
+        (typeof p.day === 'number' && p.day >= 0 && p.day <= 6);
+
+      return {
+        id: typeof p.id === 'string' ? p.id : uid(),
+        title: p.title.slice(0, 200),
+        categoryId: typeof p.categoryId === 'string' ? p.categoryId : null,
+        day: isValidDay ? p.day : null,
+        notes: typeof p.notes === 'string' ? p.notes : '',
+        answered: p.answered === true,
+        createdAt: typeof p.createdAt === 'string' ? p.createdAt : new Date().toISOString()
+      };
+    }
+
+    function normalizeState(data) {
+      const result = {
+        version: 1,
+        prayers: [],
+        categories: [],
+        prayerDays: [],
+        settings: { theme: 'light', lang: 'es' }
+      };
+
+      if (!data || typeof data !== 'object') return result;
+
+      if (Array.isArray(data.prayers)) {
+        result.prayers = data.prayers.map(normalizePrayer).filter(Boolean);
+      }
+
+      if (Array.isArray(data.categories)) {
+        result.categories = data.categories
+          .filter(function (c) {
+            return c && typeof c.id === 'string' && typeof c.name === 'string';
+          })
+          .map(function (c) {
+            return { id: c.id, name: c.name.slice(0, 40) };
+          });
+      }
+
+      if (Array.isArray(data.prayerDays)) {
+        const unique = {};
+        data.prayerDays.forEach(function (k) {
+          if (typeof k === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(k)) unique[k] = true;
+        });
+        result.prayerDays = Object.keys(unique).sort();
+      }
+
+      if (data.settings && typeof data.settings === 'object') {
+        result.settings.theme = data.settings.theme === 'dark' ? 'dark' : 'light';
+        result.settings.lang = data.settings.lang === 'en' ? 'en' : 'es';
+      }
+
+      return result;
+    }
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return createInitialState();
+        return normalizeState(JSON.parse(raw));
+      } catch (err) {
+        console.error('No se pudo cargar el estado:', err);
+        return createInitialState();
+      }
+    }
+
+    function saveState() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      } catch (err) {
+        console.error('No se pudo guardar el estado:', err);
+      }
+    }
+
+    /*  5. TOAST */
+    function toast(message, isError) {
+      const el = document.getElementById('toast');
+      el.textContent = message;
+      el.className = 'toast show' + (isError ? ' error' : '');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(function () {
+        el.className = 'toast';
+      }, 2400);
+    }
+
+    /*  6. TEMA E IDIOMA */
+    function applyTheme() {
+      const theme = state.settings.theme;
+      document.documentElement.setAttribute('data-theme', theme);
+
+      const btn = document.getElementById('themeToggle');
+      btn.innerHTML = icon(theme === 'dark' ? 'sun' : 'moon', 17);
+      btn.setAttribute('title', theme === 'dark' ? t('light') : t('dark'));
+      btn.setAttribute('aria-label', theme === 'dark' ? t('light') : t('dark'));
+    }
+
+    function applyI18n() {
+      const lang = state.settings.lang;
+      document.documentElement.setAttribute('lang', lang);
+
+      document.querySelectorAll('[data-i18n]').forEach(function (el) {
+        el.textContent = t(el.getAttribute('data-i18n'));
+      });
+
+      document.querySelectorAll('[data-i18n-placeholder]').forEach(function (el) {
+        el.setAttribute('placeholder', t(el.getAttribute('data-i18n-placeholder')));
+      });
+
+      document.querySelectorAll('[data-i18n-aria]').forEach(function (el) {
+        el.setAttribute('aria-label', t(el.getAttribute('data-i18n-aria')));
+      });
+
+      document.getElementById('langToggle').textContent = lang.toUpperCase();
+      document.title = t('appTitle');
+    }
+
+    /*  7. RENDERIZADO: ACCIÓN RÁPIDA "MARCAR HOY" */
+    function renderTodayQuick() {
+      const prayedToday = state.prayerDays.indexOf(todayKey()) >= 0;
+
+      document.querySelectorAll('[data-action="toggle-today"]').forEach(function (btn) {
+        btn.textContent = prayedToday ? t('unmarkToday') : t('markToday');
+        btn.className = 'btn ' + (prayedToday ? 'ghost' : 'primary');
+      });
+
+      document.querySelectorAll('[data-role="today-hint"]').forEach(function (el) {
+        el.textContent = prayedToday ? t('prayedToday') : t('notPrayedToday');
+      });
+    }
+
+    /*  8. RENDERIZADO: LISTA DE PETICIONES */
+    function renderDayChips() {
+      const container = document.getElementById('dayChips');
+      const short = DAYS_SHORT[state.settings.lang];
+
+      let html = '<button type="button" class="chip' +
+        (currentDayFilter === 'all' ? ' active' : '') +
+        '" data-day="all">' + escapeHtml(t('all')) + '</button>';
+
+      short.forEach(function (label, index) {
+        html += '<button type="button" class="chip' +
+          (currentDayFilter === index ? ' active' : '') +
+          '" data-day="' + index + '">' + escapeHtml(label) + '</button>';
+      });
+
+      container.innerHTML = html;
+    }
+
+    function renderCategoryFilter() {
+      const select = document.getElementById('categoryFilter');
+
+      let html = '<option value="all">' + escapeHtml(t('allCategories')) + '</option>';
+
+      state.categories.forEach(function (c) {
+        html += '<option value="' + escapeHtml(c.id) + '">' + escapeHtml(c.name) + '</option>';
+      });
+
+      select.innerHTML = html;
+
+      const stillExists = state.categories.some(function (c) {
+        return c.id === currentCategoryFilter;
+      });
+
+      if (!stillExists) currentCategoryFilter = 'all';
+      select.value = currentCategoryFilter;
+    }
+
+    function getDayLabel(prayer) {
+      if (prayer.day === 'all') return t('everyDay');
+      if (typeof prayer.day === 'number') return DAYS[state.settings.lang][prayer.day];
+      return t('noDay');
+    }
+
+    function daySortValue(prayer) {
+      if (prayer.day === 'all') return -1;
+      if (typeof prayer.day === 'number') return prayer.day;
+      return 7;
+    }
+
+    function renderPrayerCard(prayer) {
+      const category = state.categories.find(function (c) {
+        return c.id === prayer.categoryId;
+      });
+      const categoryLabel = category ? category.name : t('noCategory');
+      const dayLabel = getDayLabel(prayer);
+
+      const badges = [
+        '<span class="badge category">' + escapeHtml(categoryLabel) + '</span>',
+        '<span class="badge">' + escapeHtml(dayLabel) + '</span>'
+      ];
+
+      if (prayer.answered) {
+        badges.push('<span class="badge answered">' + escapeHtml(t('answered')) + '</span>');
+      }
+
+      const toggleTitle = prayer.answered ? t('unmarkAnswered') : t('markAnswered');
+
+      return '' +
+        '<article class="prayer-card' + (prayer.answered ? ' is-answered' : '') +
+        '" data-id="' + escapeHtml(prayer.id) + '">' +
+          '<div class="prayer-head">' +
+            '<h3 class="prayer-title">' + escapeHtml(prayer.title) + '</h3>' +
+            '<div class="prayer-actions">' +
+              '<button type="button" class="icon-btn small" data-action="toggle" ' +
+                'title="' + escapeHtml(toggleTitle) + '" aria-label="' + escapeHtml(toggleTitle) + '">' +
+                icon(prayer.answered ? 'rotate' : 'check', 15) +
+              '</button>' +
+              '<button type="button" class="icon-btn small" data-action="edit" ' +
+                'title="' + escapeHtml(t('edit')) + '" aria-label="' + escapeHtml(t('edit')) + '">' +
+                icon('edit', 15) +
+              '</button>' +
+              '<button type="button" class="icon-btn small danger" data-action="delete" ' +
+                'title="' + escapeHtml(t('delete')) + '" aria-label="' + escapeHtml(t('delete')) + '">' +
+                icon('trash', 15) +
+              '</button>' +
+            '</div>' +
+          '</div>' +
+          '<div class="prayer-meta">' + badges.join('') + '</div>' +
+          (prayer.notes
+            ? '<p class="prayer-notes">' + escapeHtml(prayer.notes) + '</p>'
+            : '') +
+        '</article>';
+    }
+
+    function renderPrayers() {
+      const list = document.getElementById('prayerList');
+      let items = state.prayers.slice();
+
+      if (currentDayFilter !== 'all') {
+        items = items.filter(function (p) {
+          return p.day === currentDayFilter || p.day === 'all';
+        });
+      }
+
+      if (currentCategoryFilter !== 'all') {
+        items = items.filter(function (p) {
+          return p.categoryId === currentCategoryFilter;
+        });
+      }
+
+      items.sort(function (a, b) {
+        if (a.answered !== b.answered) return a.answered ? 1 : -1;
+        const da = daySortValue(a);
+        const db = daySortValue(b);
+        if (da !== db) return da - db;
+        return a.title.localeCompare(b.title);
+      });
+
+      if (items.length === 0) {
+        list.innerHTML = '<div class="empty">' + escapeHtml(t('noPrayers')) + '</div>';
+        return;
+      }
+
+      list.innerHTML = items.map(renderPrayerCard).join('');
+    }
+
+    /*  9. RENDERIZADO: CALENDARIO */
+    function renderCalendar() {
+      const lang = state.settings.lang;
+      const grid = document.getElementById('calendarGrid');
+      const monthLabel = document.getElementById('monthLabel');
+
+      monthLabel.textContent = MONTHS[lang][calMonth] + ' ' + calYear;
+
+      const firstDay = new Date(calYear, calMonth, 1);
+      const startOffset = (firstDay.getDay() + 6) % 7; // 0 = lunes
+      const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
+      const todayStr = todayKey();
+
+      const prayed = {};
+      state.prayerDays.forEach(function (k) { prayed[k] = true; });
+
+      let html = '';
+      DAYS_SHORT[lang].forEach(function (d) {
+        html += '<div class="cal-head">' + escapeHtml(d) + '</div>';
+      });
+
+      for (let i = 0; i < startOffset; i++) {
+        html += '<div class="cal-cell out"></div>';
+      }
+
+      for (let day = 1; day <= daysInMonth; day++) {
+        const key = calYear + '-' + pad2(calMonth + 1) + '-' + pad2(day);
+        const isFuture = key > todayStr;
+        const classes = ['cal-cell'];
+
+        if (prayed[key]) classes.push('prayed');
+        if (key === todayStr) classes.push('today');
+        if (isFuture) classes.push('disabled');
+
+        html += '<div class="' + classes.join(' ') + '" data-date="' + key + '" ' +
+                'role="button" tabindex="' + (isFuture ? '-1' : '0') + '">' + day + '</div>';
+      }
+
+      grid.innerHTML = html;
+    }
+
+    function toggleDay(dateKey) {
+      const index = state.prayerDays.indexOf(dateKey);
+
+      if (index >= 0) {
+        state.prayerDays.splice(index, 1);
+      } else {
+        state.prayerDays.push(dateKey);
+        state.prayerDays.sort();
+      }
+
+      saveState();
+      renderCalendar();
+      renderTodayQuick();
+      renderStats();
+      renderChart();
+    }
+
+    /*  10. RENDERIZADO: ESTADÍSTICAS Y GRÁFICO */
+    function renderStats() {
+      const prayerSet = new Set(state.prayerDays);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      // Días de la semana actual con oración
+      const weekStart = getWeekStart(today);
+      let weekCount = 0;
+      for (let i = 0; i < 7; i++) {
+        const d = new Date(weekStart);
+        d.setDate(d.getDate() + i);
+        if (prayerSet.has(toDateKey(d))) weekCount++;
+      }
+
+      // Días del mes actual con oración
+      const monthPrefix = todayKey().slice(0, 7);
+      const monthCount = state.prayerDays.filter(function (k) {
+        return k.indexOf(monthPrefix) === 0;
+      }).length;
+
+      // Total de días a la fecha
+      const total = state.prayerDays.length;
+
+      document.getElementById('statWeek').textContent = weekCount;
+      document.getElementById('statMonth').textContent = monthCount;
+      document.getElementById('statTotal').textContent = total;
+    }
+
+    function renderChart() {
+      const lang = state.settings.lang;
+      const prayerSet = new Set(state.prayerDays);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      const bars = [];
+      let firstLabel = '';
+      let lastLabel = '';
+
+      if (chartRange === 'week') {
+        const weekStart = getWeekStart(today);
+        const shortDays = DAYS_SHORT[lang];
+
+        for (let i = 0; i < 7; i++) {
+          const d = new Date(weekStart);
+          d.setDate(d.getDate() + i);
+          const key = toDateKey(d);
+          const filled = prayerSet.has(key);
+          bars.push(
+            '<div class="bar' + (filled ? ' filled' : '') +
+            '" style="height:' + (filled ? 100 : 18) + '%" title="' + key + '"></div>'
+          );
+        }
+
+        firstLabel = shortDays[0];
+        lastLabel = shortDays[6];
+
+      } else if (chartRange === 'month') {
+        const y = today.getFullYear();
+        const m = today.getMonth();
+        const daysInMonth = new Date(y, m + 1, 0).getDate();
+
+        for (let day = 1; day <= daysInMonth; day++) {
+          const key = y + '-' + pad2(m + 1) + '-' + pad2(day);
+          const filled = prayerSet.has(key);
+          bars.push(
+            '<div class="bar' + (filled ? ' filled' : '') +
+            '" style="height:' + (filled ? 100 : 18) + '%" title="' + key + '"></div>'
+          );
+        }
+
+        firstLabel = '1';
+        lastLabel = String(daysInMonth);
+
+      } else {
+        const y = today.getFullYear();
+        const shortMonths = MONTHS[lang].map(function (m) {
+          return m.slice(0, 3);
+        });
+
+        for (let m = 0; m < 12; m++) {
+          const daysInMonth = new Date(y, m + 1, 0).getDate();
+          let count = 0;
+
+          for (let day = 1; day <= daysInMonth; day++) {
+            const key = y + '-' + pad2(m + 1) + '-' + pad2(day);
+            if (prayerSet.has(key)) count++;
+          }
+
+          const height = count === 0
+            ? 8
+            : Math.max(8, Math.round((count / daysInMonth) * 100));
+
+          bars.push(
+            '<div class="bar' + (count > 0 ? ' filled' : '') +
+            '" style="height:' + height + '%" title="' +
+            escapeHtml(MONTHS[lang][m] + ': ' + count) + '"></div>'
+          );
+        }
+
+        firstLabel = shortMonths[0];
+        lastLabel = shortMonths[11];
+      }
+
+      document.getElementById('streakBars').innerHTML = bars.join('');
+      document.getElementById('chartStart').textContent = firstLabel;
+      document.getElementById('chartEnd').textContent = lastLabel;
+    }
+
+    function updateChartFilterUI() {
+      document.querySelectorAll('#chartFilters button').forEach(function (btn) {
+        btn.classList.toggle('active', btn.getAttribute('data-range') === chartRange);
+      });
+    }
+
+    function setChartRange(range) {
+      chartRange = range;
+      updateChartFilterUI();
+      renderChart();
+    }
+
+    /*  11. DIÁLOGO DE PETICIÓN */
+    function openPrayerDialog(id) {
+      editingId = id || null;
+
+      const dialog = document.getElementById('prayerDialog');
+      const form = document.getElementById('prayerForm');
+      form.reset();
+
+      const categorySelect = document.getElementById('prayerCategory');
+      categorySelect.innerHTML =
+        '<option value="">' + escapeHtml(t('noCategory')) + '</option>' +
+        state.categories.map(function (c) {
+          return '<option value="' + escapeHtml(c.id) + '">' + escapeHtml(c.name) + '</option>';
+        }).join('');
+
+      const daySelect = document.getElementById('prayerDay');
+      daySelect.innerHTML =
+        '<option value="">' + escapeHtml(t('noDay')) + '</option>' +
+        '<option value="all">' + escapeHtml(t('everyDay')) + '</option>' +
+        DAYS[state.settings.lang].map(function (label, index) {
+          return '<option value="' + index + '">' + escapeHtml(label) + '</option>';
+        }).join('');
+
+      document.getElementById('prayerDialogTitle').textContent =
+        editingId ? t('editPrayer') : t('newPrayer');
+
+      if (editingId) {
+        const prayer = state.prayers.find(function (p) {
+          return p.id === editingId;
+        });
+        if (!prayer) return;
+
+        document.getElementById('prayerTitle').value = prayer.title;
+        categorySelect.value = prayer.categoryId || '';
+
+        if (typeof prayer.day === 'number') {
+          daySelect.value = String(prayer.day);
+        } else if (prayer.day === 'all') {
+          daySelect.value = 'all';
+        } else {
+          daySelect.value = '';
+        }
+
+        document.getElementById('prayerNotes').value = prayer.notes || '';
+      }
+
+      dialog.showModal();
+      document.getElementById('prayerTitle').focus();
+    }
+
+    function savePrayer(event) {
+      event.preventDefault();
+
+      const titleInput = document.getElementById('prayerTitle');
+      const title = titleInput.value.trim();
+
+      if (!title) {
+        titleInput.focus();
+        return;
+      }
+
+      const categoryId = document.getElementById('prayerCategory').value || null;
+      const dayValue = document.getElementById('prayerDay').value;
+
+      let day;
+      if (dayValue === '') {
+        day = null;
+      } else if (dayValue === 'all') {
+        day = 'all';
+      } else {
+        day = Number(dayValue);
+      }
+
+      const notes = document.getElementById('prayerNotes').value.trim();
+
+      if (editingId) {
+        const prayer = state.prayers.find(function (p) {
+          return p.id === editingId;
+        });
+        if (prayer) {
+          prayer.title = title;
+          prayer.categoryId = categoryId;
+          prayer.day = day;
+          prayer.notes = notes;
+        }
+      } else {
+        state.prayers.push({
+          id: uid(),
+          title: title,
+          categoryId: categoryId,
+          day: day,
+          notes: notes,
+          answered: false,
+          createdAt: new Date().toISOString()
+        });
+      }
+
+      saveState();
+      renderPrayers();
+      document.getElementById('prayerDialog').close();
+      toast(t('prayerSaved'));
+    }
+
+    function deletePrayer(id) {
+      if (!window.confirm(t('deletePrayerConfirm'))) return;
+
+      state.prayers = state.prayers.filter(function (p) {
+        return p.id !== id;
+      });
+
+      saveState();
+      renderPrayers();
+      toast(t('prayerDeleted'));
+    }
+
+    function toggleAnswered(id) {
+      const prayer = state.prayers.find(function (p) {
+        return p.id === id;
+      });
+      if (!prayer) return;
+
+      prayer.answered = !prayer.answered;
+      saveState();
+      renderPrayers();
+    }
+
+    /*  12. DIÁLOGO DE CATEGORÍAS */
+    function renderCategoryList() {
+      const list = document.getElementById('catList');
+
+      if (state.categories.length === 0) {
+        list.innerHTML = '<p class="muted">' + escapeHtml(t('noCategories')) + '</p>';
+        return;
+      }
+
+      list.innerHTML = state.categories.map(function (c) {
+        return '' +
+          '<div class="cat-row" data-id="' + escapeHtml(c.id) + '">' +
+            '<input type="text" class="cat-name" value="' + escapeHtml(c.name) + '" ' +
+              'maxlength="40" aria-label="' + escapeHtml(t('category')) + '">' +
+            '<button type="button" class="icon-btn small danger" data-action="delete-cat" ' +
+              'title="' + escapeHtml(t('delete')) + '" aria-label="' + escapeHtml(t('delete')) + '">' +
+              icon('trash', 15) +
+            '</button>' +
+          '</div>';
+      }).join('');
+    }
+
+    function openCategoriesDialog() {
+      renderCategoryList();
+      document.getElementById('newCatName').value = '';
+      document.getElementById('catsDialog').showModal();
+    }
+
+    function handleCategoryNameChange(event) {
+      const input = event.target;
+      if (!input.classList || !input.classList.contains('cat-name')) return;
+
+      const row = input.closest('.cat-row');
+      const id = row.getAttribute('data-id');
+      const name = input.value.trim();
+      const category = state.categories.find(function (c) {
+        return c.id === id;
+      });
+
+      if (!category) return;
+
+      if (!name) {
+        input.value = category.name;
+        return;
+      }
+
+      category.name = name;
+      saveState();
+      renderCategoryFilter();
+      renderPrayers();
+    }
+
+    function handleCategoryListClick(event) {
+      const button = event.target.closest('button[data-action="delete-cat"]');
+      if (!button) return;
+
+      const row = button.closest('.cat-row');
+      const id = row.getAttribute('data-id');
+
+      if (!window.confirm(t('deleteCategoryConfirm'))) return;
+
+      state.categories = state.categories.filter(function (c) {
+        return c.id !== id;
+      });
+
+      state.prayers.forEach(function (p) {
+        if (p.categoryId === id) p.categoryId = null;
+      });
+
+      saveState();
+      renderCategoryList();
+      renderCategoryFilter();
+      renderPrayers();
+      toast(t('categoryDeleted'));
+    }
+
+    function addCategory(event) {
+      event.preventDefault();
+
+      const input = document.getElementById('newCatName');
+      const name = input.value.trim();
+
+      if (!name) return;
+
+      const exists = state.categories.some(function (c) {
+        return c.name.toLowerCase() === name.toLowerCase();
+      });
+
+      if (exists) {
+        toast(t('categoryExists'), true);
+        return;
+      }
+
+      state.categories.push({ id: uid(), name: name });
+      input.value = '';
+      saveState();
+      renderCategoryList();
+      renderCategoryFilter();
+      toast(t('categoryAdded'));
+    }
+
+    /*  13. EXPORTAR / IMPORTAR / REINICIAR */
+    function exportData() {
+      try {
+        const blob = new Blob([JSON.stringify(state, null, 2)], {
+          type: 'application/json'
+        });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+
+        link.href = url;
+        link.download = 'bitacora-oracion-' + todayKey() + '.json';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+
+        toast(t('exportSuccess'));
+      } catch (err) {
+        console.error(err);
+        toast(t('importError'), true);
+      }
+    }
+
+    function isValidImport(data) {
+      return data &&
+        typeof data === 'object' &&
+        Array.isArray(data.prayers) &&
+        Array.isArray(data.categories);
+    }
+
+    function importData(file) {
+      if (!file) return;
+
+      if (!window.confirm(t('importConfirm'))) {
+        document.getElementById('importFile').value = '';
+        return;
+      }
+
+      const reader = new FileReader();
+
+      reader.onload = function () {
+        try {
+          const parsed = JSON.parse(reader.result);
+
+          if (!isValidImport(parsed)) throw new Error('Estructura inválida');
+
+          state = normalizeState(parsed);
+          saveState();
+          renderAll();
+          toast(t('importSuccess'));
+        } catch (err) {
+          console.error(err);
+          toast(t('importError'), true);
+        } finally {
+          document.getElementById('importFile').value = '';
+        }
+      };
+
+      reader.onerror = function () {
+        toast(t('importError'), true);
+        document.getElementById('importFile').value = '';
+      };
+
+      reader.readAsText(file);
+    }
+
+    function resetAll() {
+      if (!window.confirm(t('resetConfirm'))) return;
+
+      localStorage.removeItem(STORAGE_KEY);
+      state = createInitialState();
+      saveState();
+
+      currentDayFilter = 'all';
+      currentCategoryFilter = 'all';
+      calYear = new Date().getFullYear();
+      calMonth = new Date().getMonth();
+      chartRange = 'week';
+
+      renderAll();
+      toast(t('resetDone'));
+    }
+
+    /*  14. RENDERIZADO GLOBAL */
+    function renderAll() {
+      applyTheme();
+      applyI18n();
+      renderDayChips();
+      renderCategoryFilter();
+      renderPrayers();
+      renderCalendar();
+      renderTodayQuick();
+      renderStats();
+      updateChartFilterUI();
+      renderChart();
+    }
+
+    /*  15. EVENTOS */
+    function bindEvents() {
+      // --- Pestañas ---
+      document.querySelectorAll('.tab').forEach(function (tab) {
+        tab.addEventListener('click', function () {
+          document.querySelectorAll('.tab').forEach(function (t2) {
+            t2.classList.remove('active');
+          });
+          document.querySelectorAll('.tab-panel').forEach(function (p) {
+            p.classList.remove('active');
+          });
+
+          tab.classList.add('active');
+          document.getElementById('tab-' + tab.getAttribute('data-tab'))
+            .classList.add('active');
+        });
+      });
+
+      // --- Tema ---
+      document.getElementById('themeToggle').addEventListener('click', function () {
+        state.settings.theme = state.settings.theme === 'dark' ? 'light' : 'dark';
+        saveState();
+        applyTheme();
+      });
+
+      // --- Idioma ---
+      document.getElementById('langToggle').addEventListener('click', function () {
+        state.settings.lang = state.settings.lang === 'es' ? 'en' : 'es';
+        saveState();
+        renderAll();
+      });
+
+      // --- Acción rápida "Marcar hoy" (delegación global) ---
+      document.addEventListener('click', function (event) {
+        if (event.target.closest('[data-action="toggle-today"]')) {
+          toggleDay(todayKey());
+        }
+      });
+
+      // --- Peticiones: filtros ---
+      document.getElementById('dayChips').addEventListener('click', function (event) {
+        const chip = event.target.closest('.chip');
+        if (!chip) return;
+
+        const value = chip.getAttribute('data-day');
+        currentDayFilter = value === 'all' ? 'all' : Number(value);
+
+        renderDayChips();
+        renderPrayers();
+      });
+
+      document.getElementById('categoryFilter').addEventListener('change', function (event) {
+        currentCategoryFilter = event.target.value;
+        renderPrayers();
+      });
+
+      // --- Peticiones: acciones ---
+      document.getElementById('prayerList').addEventListener('click', function (event) {
+        const button = event.target.closest('button[data-action]');
+        if (!button) return;
+
+        const card = button.closest('.prayer-card');
+        const id = card.getAttribute('data-id');
+        const action = button.getAttribute('data-action');
+
+        if (action === 'edit') openPrayerDialog(id);
+        else if (action === 'delete') deletePrayer(id);
+        else if (action === 'toggle') toggleAnswered(id);
+      });
+
+      document.getElementById('newPrayerBtn').addEventListener('click', function () {
+        openPrayerDialog(null);
+      });
+
+      document.getElementById('manageCatsBtn').addEventListener('click', openCategoriesDialog);
+
+      // --- Diálogo de petición ---
+      document.getElementById('prayerForm').addEventListener('submit', savePrayer);
+
+      document.getElementById('cancelPrayer').addEventListener('click', function () {
+        document.getElementById('prayerDialog').close();
+      });
+
+      // --- Diálogo de categorías ---
+      document.getElementById('catList').addEventListener('change', handleCategoryNameChange);
+      document.getElementById('catList').addEventListener('click', handleCategoryListClick);
+      document.getElementById('catForm').addEventListener('submit', addCategory);
+
+      document.getElementById('closeCats').addEventListener('click', function () {
+        document.getElementById('catsDialog').close();
+      });
+
+      // --- Calendario ---
+      document.getElementById('prevMonth').addEventListener('click', function () {
+        calMonth--;
+        if (calMonth < 0) {
+          calMonth = 11;
+          calYear--;
+        }
+        renderCalendar();
+      });
+
+      document.getElementById('nextMonth').addEventListener('click', function () {
+        calMonth++;
+        if (calMonth > 11) {
+          calMonth = 0;
+          calYear++;
+        }
+        renderCalendar();
+      });
+
+      document.getElementById('calendarGrid').addEventListener('click', function (event) {
+        const cell = event.target.closest('.cal-cell');
+        if (!cell) return;
+        if (cell.classList.contains('out') || cell.classList.contains('disabled')) return;
+
+        toggleDay(cell.getAttribute('data-date'));
+      });
+
+      // --- Gráfico: filtros ---
+      document.getElementById('chartFilters').addEventListener('click', function (event) {
+        const btn = event.target.closest('button[data-range]');
+        if (!btn) return;
+        setChartRange(btn.getAttribute('data-range'));
+      });
+
+      // --- Datos ---
+      document.getElementById('exportBtn').addEventListener('click', exportData);
+
+      document.getElementById('importBtn').addEventListener('click', function () {
+        document.getElementById('importFile').click();
+      });
+
+      document.getElementById('importFile').addEventListener('change', function (event) {
+        importData(event.target.files[0]);
+      });
+
+      document.getElementById('resetBtn').addEventListener('click', resetAll);
+    }
+
+    /*  16. INICIALIZACIÓN */
+    document.addEventListener('DOMContentLoaded', function () {
+      bindEvents();
+      renderAll();
+    });
+  </script>
+</body>
+</html>

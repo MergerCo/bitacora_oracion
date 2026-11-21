@@ -6,7 +6,7 @@
   <meta name="color-scheme" content="light dark">
   <title>Bitácora de Oración</title>
   <style>
-    /*  VARIABLES DE TEMA */
+    
     :root {
   color-scheme: light;
   --bg: #f3f1ec;
@@ -43,7 +43,7 @@
   --radius: 12px;
 }
 
-    /*  BASE */
+    
     *,
     *::before,
     *::after { box-sizing: border-box; }
@@ -68,7 +68,6 @@
 
     ::selection { background: var(--accent-soft); }
 
-    /*  LAYOUT */
     .app {
       max-width: 780px;
       margin: 0 auto;
@@ -92,7 +91,7 @@
 
     .header-actions { display: flex; gap: 8px; }
 
-    /*  BOTONES */
+    
     .icon-btn {
       width: 36px;
       height: 36px;
@@ -162,7 +161,7 @@
       background: color-mix(in srgb, var(--danger) 10%, transparent);
     }
 
-    /*  PESTAÑAS */
+
     .tabs {
       display: flex;
       gap: 4px;
@@ -203,7 +202,7 @@
       to   { opacity: 1; transform: none; }
     }
 
-    /*  BARRA DE HERRAMIENTAS Y FILTROS */
+    
     .toolbar {
       display: flex;
       gap: 8px;
@@ -261,7 +260,7 @@
       cursor: pointer;
     }
 
-    /*  ACCIÓN RÁPIDA "MARCAR HOY" */
+    
     .today-quick {
       display: flex;
       flex-direction: column;
@@ -291,7 +290,7 @@
       .today-quick .btn { align-self: auto; }
     }
 
-    /*  TARJETAS DE PETICIÓN */
+    
     .prayer-list { display: flex; flex-direction: column; gap: 10px; }
 
     .prayer-card {
@@ -373,7 +372,7 @@
       border-radius: var(--radius);
     }
 
-    /*  CALENDARIO */
+    
     .calendar-head {
       display: flex;
       align-items: center;
@@ -438,7 +437,7 @@
 
     .cal-cell.today { border-color: var(--accent); }
 
-    /*  PROGRESO / ESTADÍSTICAS */
+    
     .stats-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -529,7 +528,7 @@
       margin-top: 8px;
     }
 
-    /*  MÉTODO DE ORACIÓN */
+    
     .method-intro {
       color: var(--muted);
       font-size: .9rem;
@@ -569,7 +568,7 @@
       line-height: 1.55;
     }
 
-    /*  DATOS */
+  
     .settings-group {
       background: var(--surface);
       border: 1px solid var(--line);
@@ -593,7 +592,7 @@
       margin: 14px 0 0;
     }
 
-    /*  DIÁLOGOS */
+    
     dialog {
       border: 1px solid var(--line);
       border-radius: 16px;
@@ -693,7 +692,7 @@
 
     .muted { color: var(--muted); font-size: .86rem; }
 
-    /*  TOAST */
+   
     .toast {
       position: fixed;
       left: 50%;
@@ -716,7 +715,7 @@
     .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
     .toast.error { background: var(--danger); color: var(--bg); }
 
-    /*  PIE DE PÁGINA */
+    
     .app-footer {
       margin-top: auto;
       padding: 28px 0 18px;
@@ -734,7 +733,7 @@
 
 <body>
   <div class="app">
-    <!-- ==================== ENCABEZADO ==================== -->
+    
     <header class="app-header">
       <div class="brand">
         <h1 data-i18n="appTitle">Bitácora de Oración</h1>
@@ -746,7 +745,7 @@
       </div>
     </header>
 
-    <!-- ==================== PESTAÑAS ==================== -->
+  
     <nav class="tabs" role="tablist">
       <button class="tab active" data-tab="prayers"  type="button" data-i18n="navPrayers">Peticiones</button>
       <button class="tab" data-tab="calendar" type="button" data-i18n="navCalendar">Calendario</button>
@@ -756,7 +755,7 @@
     </nav>
 
     <main>
-      <!-- ==================== PETICIONES ==================== -->
+      
       <section id="tab-prayers" class="tab-panel active">
         <div class="today-quick">
           <button type="button" class="btn primary" data-action="toggle-today"></button>
@@ -776,7 +775,7 @@
         <div id="prayerList" class="prayer-list"></div>
       </section>
 
-      <!-- ==================== CALENDARIO ==================== -->
+      
       <section id="tab-calendar" class="tab-panel">
         <div class="today-quick">
           <button type="button" class="btn primary" data-action="toggle-today"></button>
@@ -792,7 +791,7 @@
         <div class="calendar-grid" id="calendarGrid"></div>
       </section>
 
-      <!-- ==================== PROGRESO ==================== -->
+      
       <section id="tab-stats" class="tab-panel">
         <div class="stats-grid">
           <div class="stat">
@@ -822,7 +821,7 @@
         </div>
       </section>
 
-      <!-- ==================== MÉTODO ==================== -->
+      
       <section id="tab-method" class="tab-panel">
         <div class="method">
           <h2 data-i18n="methodTitle">Método de oración en 3 pasos</h2>
@@ -848,7 +847,7 @@
         </div>
       </section>
 
-      <!-- ==================== DATOS ==================== -->
+      
       <section id="tab-data" class="tab-panel">
         <div class="settings-group">
           <div class="data-actions">
@@ -862,7 +861,7 @@
       </section>
     </main>
 
-    <!-- ==================== PIE ==================== -->
+    
     <footer class="app-footer">
       <div data-i18n="developedBy">Desarrollado por: Jesús Hernández</div>
       <div><a href="mailto:info.mergerconsulting@gmail.com">info.mergerconsulting@gmail.com</a></div>
@@ -870,7 +869,7 @@
     </footer>
   </div>
 
-  <!-- ==================== DIÁLOGO: PETICIÓN ==================== -->
+  
   <dialog id="prayerDialog">
     <form id="prayerForm" novalidate>
       <h2 id="prayerDialogTitle">Nueva petición</h2>
@@ -902,7 +901,7 @@
     </form>
   </dialog>
 
-  <!-- ==================== DIÁLOGO: CATEGORÍAS ==================== -->
+  
   <dialog id="catsDialog">
     <h2 data-i18n="categoriesTitle">Gestionar categorías</h2>
     <div id="catList"></div>
@@ -920,7 +919,7 @@
   <script>
     'use strict';
 
-    /*  1. CONSTANTES */
+    
     const STORAGE_KEY = 'prayer-journal-v1';
 
     const MONTHS = {
@@ -954,7 +953,7 @@
       moon: '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>'
     };
 
-    /*  2. INTERNACIONALIZACIÓN (i18n) */
+    
     const I18N = {
       es: {
         appTitle: 'Bitácora de Oración',
@@ -1133,7 +1132,7 @@
       }
     };
 
-    /*  3. UTILIDADES */
+    
     function uid() {
       return Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
     }
@@ -1178,7 +1177,7 @@
       return d;
     }
 
-    /*  4. ESTADO Y PERSISTENCIA */
+    
     let state = loadState();
     let editingId = null;
     let currentDayFilter = 'all';
@@ -1285,7 +1284,7 @@
       }
     }
 
-    /*  5. TOAST */
+    
     function toast(message, isError) {
       const el = document.getElementById('toast');
       el.textContent = message;
@@ -1296,7 +1295,7 @@
       }, 2400);
     }
 
-    /*  6. TEMA E IDIOMA */
+    
     function applyTheme() {
       const theme = state.settings.theme;
       document.documentElement.setAttribute('data-theme', theme);
@@ -1327,7 +1326,7 @@
       document.title = t('appTitle');
     }
 
-    /*  7. RENDERIZADO: ACCIÓN RÁPIDA "MARCAR HOY" */
+    
     function renderTodayQuick() {
       const prayedToday = state.prayerDays.indexOf(todayKey()) >= 0;
 
@@ -1341,7 +1340,7 @@
       });
     }
 
-    /*  8. RENDERIZADO: LISTA DE PETICIONES */
+    
     function renderDayChips() {
       const container = document.getElementById('dayChips');
       const short = DAYS_SHORT[state.settings.lang];
@@ -1467,7 +1466,7 @@
       list.innerHTML = items.map(renderPrayerCard).join('');
     }
 
-    /*  9. RENDERIZADO: CALENDARIO */
+    
     function renderCalendar() {
       const lang = state.settings.lang;
       const grid = document.getElementById('calendarGrid');
@@ -1525,7 +1524,7 @@
       renderChart();
     }
 
-    /*  10. RENDERIZADO: ESTADÍSTICAS Y GRÁFICO */
+    
     function renderStats() {
       const prayerSet = new Set(state.prayerDays);
       const today = new Date();
@@ -1646,7 +1645,7 @@
       renderChart();
     }
 
-    /*  11. DIÁLOGO DE PETICIÓN */
+    
     function openPrayerDialog(id) {
       editingId = id || null;
 
@@ -1772,7 +1771,7 @@
       renderPrayers();
     }
 
-    /*  12. DIÁLOGO DE CATEGORÍAS */
+    
     function renderCategoryList() {
       const list = document.getElementById('catList');
 
@@ -1873,7 +1872,7 @@
       toast(t('categoryAdded'));
     }
 
-    /*  13. EXPORTAR / IMPORTAR / REINICIAR */
+    
     function exportData() {
       try {
         const blob = new Blob([JSON.stringify(state, null, 2)], {
@@ -1956,7 +1955,7 @@
       toast(t('resetDone'));
     }
 
-    /*  14. RENDERIZADO GLOBAL */
+    
     function renderAll() {
       applyTheme();
       applyI18n();
@@ -1970,7 +1969,7 @@
       renderChart();
     }
 
-    /*  15. EVENTOS */
+    
     function bindEvents() {
       // --- Pestañas ---
       document.querySelectorAll('.tab').forEach(function (tab) {
@@ -2110,7 +2109,7 @@
       document.getElementById('resetBtn').addEventListener('click', resetAll);
     }
 
-    /*  16. INICIALIZACIÓN */
+    
     document.addEventListener('DOMContentLoaded', function () {
       bindEvents();
       renderAll();
